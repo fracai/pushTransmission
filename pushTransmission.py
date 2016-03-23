@@ -1,22 +1,21 @@
 #!/usr/local/python/bin/python -OO
 
 import ConfigParser
-import httplib
 import sys
-import urllib
 
+import chump
 import os
 
 
 def read_config(config):
     configuration = ConfigParser.ConfigParser()
-    config_file = os.path.join(os.path.dirname(sys.argv[0]), config)
+    config_path = os.path.join(os.path.dirname(sys.argv[0]), config)
 
-    if not os.path.isfile(config_file):
+    if not os.path.isfile(config_path):
         sys.exit("Config file not found")
 
     try:
-        fp = open(config_file, "r")
+        fp = open(config_path, "r")
         configuration.readfp(fp)
         fp.close()
     except IOError:
@@ -30,20 +29,15 @@ def push(torrent_name):
     api_token = configuration.get("Pushover", "api_token")
     user_key = configuration.get("Pushover", "user_key")
 
+    app = chump.Application(api_token)
+    user = app.get_user(user_key)
+
     title = "Download complete"
     message = torrent_name
 
-    cx = httplib.HTTPSConnection("api.pushover.net:443")
-    cx.request(
-        "POST",
-        "/1/messages",
-        urllib.urlencode({
-            "token": api_token,
-            "user": user_key,
-            "title": title,
-            "message": message
-        }),
-        {"Content-type": "application/x-www-form-urlencoded"}
+    user.send_message(
+        message,
+        title=title
     )
 
 
