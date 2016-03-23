@@ -8,15 +8,15 @@ import urllib
 import os
 
 
-def readConf(confFile):
+def read_config(config):
     configuration = ConfigParser.ConfigParser()
-    file = os.path.join(os.path.dirname(sys.argv[0]), confFile)
+    config_file = os.path.join(os.path.dirname(sys.argv[0]), config)
 
-    if not os.path.isfile(file):
+    if not os.path.isfile(config_file):
         sys.exit("Config file not found")
 
     try:
-        fp = open(file, "r")
+        fp = open(config_file, "r")
         configuration.readfp(fp)
         fp.close()
     except IOError:
@@ -25,21 +25,21 @@ def readConf(confFile):
     return configuration
 
 
-def push(torrentName):
-    configuration = readConf("pushover.cfg")
-    apiToken = configuration.get("Pushover", "api_token")
-    userKey = configuration.get("Pushover", "user_key")
+def push(torrent_name):
+    configuration = read_config("pushover.cfg")
+    api_token = configuration.get("Pushover", "api_token")
+    user_key = configuration.get("Pushover", "user_key")
 
     title = "Download complete"
-    message = torrentName
+    message = torrent_name
 
     cx = httplib.HTTPSConnection("api.pushover.net:443")
     cx.request(
         "POST",
         "/1/messages",
         urllib.urlencode({
-            "token": apiToken,
-            "user": userKey,
+            "token": api_token,
+            "user": user_key,
             "title": title,
             "message": message
         }),
