@@ -9,10 +9,8 @@ import os
 
 def read_config(config):
     config_path = os.path.join(os.path.dirname(sys.argv[0]), config)
-
     if not os.path.isfile(config_path):
         sys.exit("Config file not found")
-
     try:
         with open(config_path, 'r') as config_fp:
             configuration = ConfigParser.ConfigParser()
