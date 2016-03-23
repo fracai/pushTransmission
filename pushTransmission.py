@@ -1,4 +1,4 @@
-#!/usr/local/python/bin/python -OO
+#!/usr/bin/env python -OO
 
 import ConfigParser
 import sys
